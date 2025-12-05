@@ -1,0 +1,11 @@
+start   get              
+gdsg
+        ifzero done    gsdfgs
+        add sum   fdgdf
+        store sum    sdfgs
+        goto start   fdghd
+done    load sum    d
+        print
+        stop gfdg
+
+sum  gdsfgds

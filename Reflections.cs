@@ -1,10 +1,22 @@
+using System.ComponentModel;
+
 namespace Toy_Machine;
 
 public class Reflections
 {
     // INPUTS
 
-    public void Get(string arg) => Int32.TryParse(Console.ReadLine(), out Framework.Accumulator);
+    public void Get(string arg)
+    {
+        try
+        {
+            Framework.Accumulator = int.Parse(Console.ReadLine()!);
+        }
+        catch
+        {
+            throw new Exception("Input needs to be a number");
+        }
+    }
     
     // ARITHMETICS
     
@@ -16,15 +28,22 @@ public class Reflections
 
     public void Div(string input) => Framework.Accumulator /= ReturnValue(input);
     
-    // MEMORY PROCESSES
+    public void Mod(string input) => Framework.Accumulator %= ReturnValue(input);
+    
+    // MEMORY
 
     public void Store(string name) => Framework.MemorySlots[name] = Framework.Accumulator;
 
     public void Load(string name) => Framework.Accumulator = Framework.MemorySlots[name];
     
-    // LABEL PROCESSES
-    
-    public void Goto(string input) => Framework.Index = Framework.Labels[input];
+    // RECURSION
+
+    public void Goto(string input)
+    {
+        Framework.ProcessCommands();
+        
+        Framework.Index = Framework.Labels[input];
+    }
     
     // CONDITIONALS
     
@@ -36,11 +55,27 @@ public class Reflections
         }
     }
     
+    public void Ifneg(string input)
+    {
+        if (Framework.Accumulator < 0)
+        {
+            Goto(input);
+        }
+    }
+
+    public void Ifpos(string input)
+    {
+        if (Framework.Accumulator > 0)
+        {
+            Goto(input);
+        }
+    }
+    
     // OUTPUTS
 
     public void Print(string arg) => Console.WriteLine(Framework.Accumulator);
     
-    public void Stop(string arg) {}
+    public void Stop(string arg) { Framework.Terminate = true; }
     
     // STATICS
 
