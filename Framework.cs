@@ -11,22 +11,18 @@ public static class Framework
     private static readonly Type ReflectionsType = typeof(Reflections);
     private static readonly Reflections R = new();
     
-    private static string[] _rawCommands = [];
     private static List<List<string>> _commands = [];
     private static List<string> _extracts = [];
 
-    private static readonly string[] CommandDictionary =
-        ["Get", "Add", "Sub", "Mul", "Div", "Mod", "Store", "Load", "Goto", "Ifzero", "Ifneg", "Ifpos", "Print", "Stop"];
-
+    private static readonly List<string> CommandDictionary = 
+        Parser.CommandDictionary();
+    
     public static bool Terminate;
     
     public static void Main() => Init();
 
     private static void Init()
     {
-        _rawCommands = File.ReadAllText("Example.txt").Split('\n').
-            Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-
         ProcessCommands();
         
         ComputeCommands();
@@ -34,12 +30,7 @@ public static class Framework
 
     public static void ProcessCommands()
     {
-        _commands = [];
-        
-        foreach (string raw in _rawCommands)
-        {
-            _commands.Add(raw.Split(' ').Where(x => !string.IsNullOrWhiteSpace(x)).ToList());
-        }
+        _commands = Parser.ExtractWords("Example.txt");
         
         if(Correct(_commands[0][0]) != "Start") throw new Exception("Commands need to start with [start]");
 
@@ -77,7 +68,7 @@ public static class Framework
         if(_extracts.Count != 0) 
             ReflectionsType.GetMethod(Correct(_extracts[0]))?.Invoke(R, [_extracts.ElementAtOrDefault(1)]);
         
-        if(!Terminate && Index != _rawCommands.Length) { ComputeCommands(); }
+        if(!Terminate && Index != _commands.Count) { ComputeCommands(); }
     }
 
     private static void ProcessLabels()

@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace Toy_Machine;
 
 public class Reflections

@@ -8,4 +8,4 @@ done    load sum    d
         print
         stop gfdg
 
-sum  gdsfgds
+sum 0
